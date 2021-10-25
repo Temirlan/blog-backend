@@ -6,6 +6,8 @@ services:
     environment:
       ADMINER_DESIGN: nette
       ADMINER_PLUGINS: tables-filter tinymce
+    networks:
+      - nesjs-network
     ports:
       - 8080:8080
   dev:
@@ -45,6 +47,7 @@ services:
       - postgres
       - adminer
   postgres:
+    container_name: postgresdb
     image: postgres
     environment:
       - POSTGRES_PASSWORD=root
@@ -53,7 +56,9 @@ services:
     volumes:
       - pg_blog:/var/lib/postgresql/data
     ports:
-      - ${POSTGRES_PORT:-5432}:5432
+      - 5433:5432
+    networks:
+      - nesjs-network
     depends_on:
       - adminer
 networks:
