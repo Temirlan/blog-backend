@@ -1,65 +1,63 @@
 version: '3.8'
 
 services:
-    adminer:
-      image: adminer:latest
-      environment:
-        ADMINER_DESIGN: nette
-        ADMINER_PLUGINS: tables-filter tinymce
-      ports:
-        - 8080:8080
-    dev:
-        container_name: blog_api_dev
-        image: blog-api-dev:1.0.0
-        build:
-            context: .
-            target: development
-            dockerfile: ./Dockerfile
-        command: npm run start:debug
-        ports:
-            - 3001:3000
-        networks:
-            - nesjs-network
-        volumes:
-            - .:/usr/src/app
-            - /usr/src/app/node_modules
-        restart: unless-stopped
-        depends_on:
-          - postgres
-          - adminer
-    prod:
-        container_name: blog_api_prod
-        image: blog-api-prod:1.0.0
-        build:
-            context: .
-            target: production
-            dockerfile: ./Dockerfile
-        command: npm run start:prod
-        ports:
-            - 3001:3000
-        networks:
-            - nesjs-network
-        volumes:
-            - .:/usr/src/app
-            - /usr/src/app/node_modules
-        restart: unless-stopped
-        depends_on:
-          - postgres
-          - adminer
-    postgres:
-        image: postgres
-        environment:
-          - POSTGRES_PASSWORD=root
-          - POSTGRES_USER=root
-          - POSTGRES_DB=blog
-        volumes:
-          - pg_blog:/var/lib/postgresql/data
-        ports:
-          - ${POSTGRES_PORT:-5432}:5432
-        depends_on:
-          - adminer
+  adminer:
+    image: adminer:latest
+    environment:
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080:8080
+  dev:
+    container_name: blog_api_dev
+    image: blog-api-dev:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
+    ports:
+      - 3001:3001
+    networks:
+      - nesjs-network
+    volumes:
+      - .:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - adminer
+  prod:
+    container_name: blog_api_prod
+    image: blog-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 3001:3001
+    networks:
+      - nesjs-network
+    volumes:
+      - .:/usr/src/app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - adminer
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=blog
+    volumes:
+      - pg_blog:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    depends_on:
+      - adminer
 networks:
-    nesjs-network:
+  nesjs-network:
 
 volumes:
   pg_blog:
